@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    //@Autowired
-    //private ReaderRepository readerRepository;
     @Autowired
     MyLdapAuthoritiesPopulator myLdapAuthoritiesPopulator;
 
@@ -21,8 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/","/login").permitAll()
-               // .antMatchers("/test").access("hasRole('ROLE_MANAGERS')")
-                //.antMatchers("/**").access("hasRole('ROLE_DEVELOPERS')")
+                .antMatchers("/test").access("hasRole('MANAGERS')")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -30,33 +27,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureUrl("/login?error=true");
     }
 
-    //@Autowired
-    //CustomUserDetailsService customUserDetailsService;
-
-    /*@Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-       // auth.userDetailsService(customUserDetailsService);
-        auth
-                .ldapAuthentication()
-                .userDnPatterns("uid={0},ou=people")
-                .groupSearchBase("ou=groups")
-                .contextSource()
-                .url("ldap://localhost:8889/dc=springframework,dc=org")
-                .and()
-                .passwordCompare()
-                //.passwordEncoder(new LdapShaPasswordEncoder())
-                .passwordAttribute("userPassword");
-    }*/
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-       // auth.userDetailsService(customUserDetailsService);
         auth
                 .ldapAuthentication()
                 .userDnPatterns("uid={0},ou=people")
                 .groupSearchBase("ou=groups")
                 .ldapAuthoritiesPopulator(myLdapAuthoritiesPopulator)
                 .contextSource()
-                .url("ldap://localhost:8889/dc=springframework,dc=org")
+                .url("ldap://localhost:389/dc=micmiu,dc=com")
                 .and()
                 .passwordCompare()
                 //.passwordEncoder(new LdapShaPasswordEncoder())

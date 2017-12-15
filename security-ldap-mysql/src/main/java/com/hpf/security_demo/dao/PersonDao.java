@@ -36,14 +36,12 @@ public class PersonDao {
      * @param person
      */
     public void createOnePerson(Person person) {
-        BasicAttribute ba = new BasicAttribute("objectclass");
-        ba.add("person"); //此处的person对应的是core.schema文件中的objectClass：person
         Attributes attr = new BasicAttributes();
-        attr.put(ba);
+        attr.put("objectclass", "top");
+        attr.put("objectclass", "person");
         //必填属性，不能为null也不能为空字符串
         attr.put("cn", person.getCn());
         attr.put("sn", person.getSn());
-
         //可选字段需要判断是否为空，如果为空则不能添加
         if (person.getUserPassword() != null
                 && person.getUserPassword().length() > 0) {
@@ -144,8 +142,9 @@ public class PersonDao {
      */
     public DistinguishedName getDn(String cn) {
         //得到根目录，也就是配置文件中配置的ldap的根目录
-        DistinguishedName newContactDN = new DistinguishedName("dc=springframework,dc=org");
+        DistinguishedName newContactDN = new DistinguishedName();
         // 添加cn，即使得该条记录的dn为"cn=cn,根目录",例如"cn=abc,dc=testdc,dc=com"
+        newContactDN.add("ou","people");
         newContactDN.add("cn", cn);
         return newContactDN;
     }
